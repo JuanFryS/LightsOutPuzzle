@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta HTTP-EQUIV="Content-Type" CONTENT="text/html">
+    <title>
+      Lights Out Puzzle
+    </title>
+  </head>
+  <body>
+
+    <script language="JavaScript">
+      var imgs = new Array();     // string[], URLs of tile images
+      var nums = new Array();     // string[], URLs of digit images
+      var maxcolcount = 7;        // integer, maximum number of columns
+      var maxrowcount = 7;        // integer, maximum number of rows
+
+      var outrangeimg = "outrange.gif";   // string, URL of empty ans cell
+      var emptyimg    = "empty.gif";      // string, URL of empty cell
+      imgs[0] = "blue.gif";
+      imgs[1] = "red.gif";
+      // --- global variables ---
+      var colcount;   // integer, number of columns
+      var rowcount;   // integer, number of rows
+      var cells;      // integer[row][col], current states of tiles
+      var steps;      // integer, current steps of operation
+      var playing;    // boolean, if playing
+      var autogen;    // boolean, if playing with an auto-generated problem
+      init();
+      function init() {
+        nums[0] = "number0.gif";
+        nums[1] = "number1.gif";
+        var col;
+        var row;
+        cells = new Array();
+        for (col = 0; col < maxcolcount; col++) {
+          cells[col] = new Array();
+          for (row = 0; row < maxrowcount; row++)
+            cells[col][row] = 0;
+        }
+      }
+
+      function newSettings(){
+        colcount = document.toolbar.dimension.options[
+          document.toolbar.dimension.selectedIndex].value;
+        rowcount = document.toolbar.dimension.options[
+          document.toolbar.dimension.selectedIndex].value;
+        for (var col = 0; col < maxcolcount; col++)
+          for (var row = 0; row < maxrowcount; row++) {
+            setcellimage(col,row,emptyimg);
+          }
+        newGame();
+      }
+
+      function setcell(col,row,val) {
+        cells[col][row] = val;
+        setcellimage(col,row,imgs[val]);
+      }
+      function setcellimage(col,row,imgsrc) {
+        eval("document." + cellname(col,row) + ".src = '" + imgsrc + "'");
+      }
+
+      function cellname(col,row) {
+        return "cell" + col + "_" + row;
+      }
+
+      function newGame(){
+        for (var col = 0; col < colcount; col++)
+          for (var row = 0; row < rowcount; row++) {
+            setcell(col,row, Math.floor(Math.random() * 2));
+          }
+        playing = true;
+        steps = 0;
+        document.getElementById("steps").innerHTML = "0";
+      }
+
+      function operate(col,row) {
+        if (col >= colcount || row >= rowcount)
+          return;
+        flip(col,row);
+        if (playing) {
+          if (col > 0)
+            flip(col-1, row);
+          if (row > 0)
+            flip(col, row-1);
+          if (col < colcount - 1)
+            flip(col+1, row);
+          if (row < rowcount - 1)
+            flip(col, row+1);
+          steps++;
+          document.getElementById('steps').innerHTML = steps;
+          if (isCleared()) {
+            alert("Cleared in " + steps + " steps!");
+          }
+        }
+      }
+
+      function flip(col,row) { 
+        setcell(col,row,(cells[col][row] + 1) % 2);
+      }
+
+      function isCleared(){
+        var sample = cells[0][0];
+        for (var col = 0; col < colcount; col++)
+          for (var row = 0; row < rowcount; row++)
+            if (cells[col][row] != sample) return false;
+        return true;
+      }
+
+      function createField(imgsrc, prefix) {
+        var row;
+        var col;
+        for (row = 0; row < maxrowcount; row++) {
+          for (col = 0; col < maxcolcount; col++) {
+            document.write("<IMG SRC='" + imgsrc);
+            document.write("' NAME='" + prefix + cellname(col,row));
+            document.write("' onmousedown='javascript:" + prefix);
+            document.write("operate(" + col + "," + row + ")' ");
+            document.write("ondblclick='javascript:" + prefix);
+            document.write("operate(" + col + "," + row + ")'>");
+          }
+          document.write("<BR>");
+        }
+      }
+    </script>
+
+    <form NAME="toolbar">
+      <table>
+        <tr>
+          <td>
+            <div>
+              <input type="button" value="New Game" onClick="javascript:newGame()">
+              Steps: <span id="steps">0</span>
+            </div>
+            <tr height=40pt>
+              <td>
+                <select name="dimension" onchange="javascript:newSettings()">
+                  <option value="3"         >3 x 3
+                  <option value="4"         >4 x 4
+                  <option value="5"         >5 x 5
+                  <option value="6"         >6 x 6
+                  <option value="7"         >7 x 7
+                </select>
+              </td>
+            </tr>
+          </td>
+        </tr>
+      </table>
+    </form>  
+    <script language="JavaScript">
+      document.write("<TABLE><TR><TD>");
+      createField(emptyimg, "");
+      newSettings();
+    </script>
+
+  </body>
+</html>
