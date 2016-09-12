@@ -6,29 +6,56 @@
       Lights Out Puzzle
     </title>
   </head>
+
+  <style>
+
+    body{
+      background-color:burlywood;
+      margin-left: 25%;
+      margin-right: auto;
+      margin-top: 2%;
+      font-family: Georgia;
+    }
+
+    .button_new{
+      background-color: white;
+      border: none;
+      color: black;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      margin: 4px 2px;
+      -webkit-transition-duration: 0.4s; /* Safari */
+      transition-duration: 0.4s;
+      cursor: pointer;
+      border: 2px solid #555555;
+    }
+
+    .button_new:hover {
+      background-color: #555555;
+      color: white;
+    }
+
+
+  </style>
+
   <body>
 
     <script language="JavaScript">
       var imgs = new Array();     // string[], URLs of tile images
-      var nums = new Array();     // string[], URLs of digit images
+      imgs[0] = "off.png";
+      imgs[1] = "on.png";
       var maxcolcount = 7;        // integer, maximum number of columns
       var maxrowcount = 7;        // integer, maximum number of rows
-
-      var outrangeimg = "outrange.gif";   // string, URL of empty ans cell
       var emptyimg    = "empty.gif";      // string, URL of empty cell
-      imgs[0] = "blue.gif";
-      imgs[1] = "red.gif";
       // --- global variables ---
       var colcount;   // integer, number of columns
       var rowcount;   // integer, number of rows
       var cells;      // integer[row][col], current states of tiles
       var steps;      // integer, current steps of operation
       var playing;    // boolean, if playing
-      var autogen;    // boolean, if playing with an auto-generated problem
       init();
       function init() {
-        nums[0] = "number0.gif";
-        nums[1] = "number1.gif";
         var col;
         var row;
         cells = new Array();
@@ -128,26 +155,26 @@
         <tr>
           <td>
             <div>
-              <input type="button" value="New Game" onClick="javascript:newGame()">
+              <input class="button_new" type="button" value="New Game" onClick="javascript:newGame()">
               Steps: <span id="steps">0</span>
+              <tr height=40pt>
+                <td>
+                  <select name="dimension" onchange="javascript:newSettings()">
+                    <option value="3">3 x 3
+                    <option value="4">4 x 4
+                    <option value="5">5 x 5
+                    <option value="6">6 x 6
+                    <option value="7">7 x 7
+                  </select>
+                </td>
+              </tr>
             </div>
-            <tr height=40pt>
-              <td>
-                <select name="dimension" onchange="javascript:newSettings()">
-                  <option value="3"         >3 x 3
-                  <option value="4"         >4 x 4
-                  <option value="5"         >5 x 5
-                  <option value="6"         >6 x 6
-                  <option value="7"         >7 x 7
-                </select>
-              </td>
-            </tr>
           </td>
         </tr>
       </table>
     </form>  
     <script language="JavaScript">
-      document.write("<TABLE><TR><TD>");
+      document.write("<TABLE border='0' cellspacing='0' cellpadding='0'><TR><TD>");
       createField(emptyimg, "");
       newSettings();
     </script>
